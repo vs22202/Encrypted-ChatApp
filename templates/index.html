@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends "base.html"%}
+
+{% block main %}
+<h3 class="p-3">Hi {% if current_user.is_authenticated %}{{ current_user.username }}
+    {% else %} Guest
+    {% endif %}!</h3>
+<section class="bg-dark text-primary p-3 text-center text-md-start">
+    <h4>About Us</h4>
+    <p class="lead text-light">We Aim to Provide the most secure way to communicate with your peers.</p>
+</section>
+<section class="text-dark p-3 text-center text-md-end">
+    <h4>The algorithms we use</h4>
+    <p class="lead">RSA SHA AES</p>
+</section>
+{% if rooms %}
+<section class="bg-dark text-primary p-3 mb-3">
+    <h4>Your Rooms</h4>
+<ul class="list-group list-group-flush">
+    {% for room in rooms %}
+    <li class="list-group-item bg-dark text-center text-md-start border-0"><a class="text-light fs-6" href="room/{{room._id.room_id}}">{{ room.room_name }}</a></li>
+    {% endfor %}
+</ul>
+</section>
+{% endif %}
+{% endblock %}

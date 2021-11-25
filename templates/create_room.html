@@ -1,0 +1,19 @@
+{% extends "base.html"%}
+
+{% block main %}
+<h1>Create Room</h1>
+{% if message %}
+<h3>{{message}}</h3>
+{% endif %}
+<form method='post'>
+    <div>
+        <label>Room Name:</label>
+        <input type="text" name="room_name">
+    </div>
+    <div>
+        <label>Members:</label>
+        <input type="text" name="members">
+    </div>
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

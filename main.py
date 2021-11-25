@@ -13,7 +13,7 @@ from db import get_user, save_user, save_room, add_room_members, get_rooms_for_u
     reset_room_aes_key
 
 app = Flask(__name__)
-app.secret_key = "my_secret key"
+app.secret_key = "my_very_secret_key"
 socketio = SocketIO(app)
 login_manager = LoginManager()
 login_manager.login_view = 'login'

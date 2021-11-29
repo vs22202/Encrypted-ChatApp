@@ -104,6 +104,7 @@ def add_room_members(room_id, room_name, usernames, added_by):
 def remove_room_members(room_id, usernames):
     room_members_collection.delete_many(
         {'_id': {'$in': [{'room_id': ObjectId(room_id), 'username': username} for username in usernames]}})
+    reset_room_aes_key(room_id)
 
 
 def save_priv_key(user, priv_key):

@@ -42,7 +42,9 @@
       </div>
 </div>
 <div>
+{% if admin %}
 <button id="reset_key" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Resets room symmetric key"><i class="bi bi-key"> Reset Aes Key</i></button>
+{% endif %}
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"

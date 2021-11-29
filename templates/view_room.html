@@ -112,24 +112,28 @@
         location.reload();
         console.log("after the js fetch",room_aes_key)
     };
-    document.getElementById("load_older_messages_button").onclick = (e) =>{
-        fetch(`/room/{{room._id}}/messages?page=${++page}`, {
+    /*document.getElementById("load_older_messages_button").onclick = (e) =>{
+        console.log("Reached");
+        //fetch(`/room/{{room._id}}/messages?page=${++page}`, {
+        fetch(`/room/{{room._id}}/messages`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'
             }
-            }).then(res=>res.json().then(messages=>{
-                if(messages.length !== 0 ){
-                messages.reverse().forEach(data=> {
-                    const newNode=document.createElement('div');
-                    var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
-                    data.text = Normaltext            
-                    console.log(data.text)        
-                    newNode.innerHTML=`<p>${data.sender}&nbsp;[${data.created_at }]&nbsp;</p> ${data.text}`;
-                    const messages_div=document.getElementById('messages');
-                    messages_div.insertBefore(newNode,messages_div.firstChild);
+            }).then(res=>res.json().then(message=>{
+                if(message.length !== 0){
+                    //console.log("There are messages if:", messages.length);
+                    message.reverse().forEach(data=> {
+                        const newNode=document.createElement('div');
+                        var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
+                        data.text = Normaltext            
+                        console.log(data.text)        
+                        newNode.innerHTML=`<p>${data.sender}&nbsp;[${data.created_at }]&nbsp;</p> ${data.text}`;
+                        const messages_div=document.getElementById('messages');
+                        messages_div.insertBefore(newNode,messages_div.firstChild);
                 });}
                 else{
+                    //console.log("There are messages else:", messages.length);
                     const warning_message =document.getElementById('warning-message');
                     warning_message ? warning_message.remove() :"";
                     const newNode=document.createElement('div');
@@ -143,7 +147,48 @@
                             elem ? elem.remove() :"";
                         }, 4000);}
             }))
-    }
+        } */
+    document.getElementById("load_older_messages_button").onclick = (e) =>{
+        console.log("Reached");
+        fetch(`/room/{{room._id}}/messages`, {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json'
+            }
+            }).then(res=>res.json().then(message=>{
+                if(message.length !== 0  && page<message.length){
+                    message.reverse();
+                    var forward = page+3;
+                    if(message.length<page+3)
+                        forward = message.length;
+                    for(let i=page;i<forward;i++){
+                        data = message[i];
+                        const newNode=document.createElement('div');
+                        var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
+                        data.text = Normaltext            
+                        console.log(data.text)        
+                        newNode.innerHTML=`<p>${data.sender}&nbsp;[${data.created_at }]&nbsp;</p> ${data.text}`;
+                        const messages_div=document.getElementById('messages');
+                        messages_div.insertBefore(newNode,messages_div.firstChild);
+                    }
+                }
+                else{
+                    const warning_message =document.getElementById('warning-message');
+                    warning_message ? warning_message.remove() :"";
+                    const newNode=document.createElement('div');
+                    newNode.classList.add('alert','alert-warning');
+                    newNode.setAttribute('role','alert');
+                    newNode.setAttribute('id','warning-message');
+                    newNode.innerText = 'No More Older Messages Available';
+                    document.getElementById('messages').insertAdjacentElement('beforebegin',newNode);
+                    setTimeout(() => {
+                            const elem = document.getElementById("warning-message");
+                            elem ? elem.remove() :"";
+                        }, 4000);
+                    }
+                page+=3;
+            }))
+    } 
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)

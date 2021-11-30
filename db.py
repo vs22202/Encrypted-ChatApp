@@ -27,7 +27,8 @@ def save_user(username, email, password):
     password_hash = generate_password_hash(password)
     # RSA key gen
     rsa_pub_key, rsa_priv_key = generate_rsa_keys()
-    print(type(rsa_pub_key), flush=True)
+    print('User rsa pub key : ', rsa_pub_key, flush=True)
+    print('User rsa priv key : ', rsa_priv_key, flush=True)
     add_to_hash_table(username, rsa_pub_key)
     save_priv_key(username, rsa_priv_key)
     users_collection.insert_one(
@@ -43,8 +44,7 @@ def get_user(username):
 def save_room(room_name, created_by):
     # aes key gen
     aes_key = generate_aes_key()
-    print(created_by.rsaPubKey)
-    print(type(created_by.rsaPubKey))
+    print('room aes key :', aes_key, flush=True)
     room_aes_key_encrypted = encrypt_rsa(aes_key, created_by.rsaPubKey)
     room_id = rooms_collection.insert_one(
         {'name': room_name, 'created_by': created_by.username, 'creator_pub_key': created_by.rsaPubKey,
@@ -69,6 +69,7 @@ def add_room_member(room_id, room_name, member, added_by, is_room_admin=False):
         room = get_room(room_id)
         aes_key = decrypt_rsa(room['room_aes_key'], get_priv_key(creator))
         room_aes_key = encrypt_rsa(aes_key, user.rsaPubKey)
+        print('Encrypted aes key for creator : ', room_aes_key, flush=True)
         # create dsa sign
         aes_key_sign = rsa_ds_signer(aes_key, get_priv_key(creator))
         room_members_collection.insert_one({'_id': {'room_id': ObjectId(room_id), 'username': member.username},
@@ -83,14 +84,16 @@ def add_room_members(room_id, room_name, usernames, added_by):
     for user in usernames:
         member = get_user(user)
         # check with hash table
-        print(get_and_verify_pub_key_sign_from_hash_table(
+        print('Hash Table Verification: ', get_and_verify_pub_key_sign_from_hash_table(
             added_by.username, added_by.rsaPubKey), flush=True)
         if (member.rsaPubKey):
             room = get_room(room_id)
             aes_key = decrypt_rsa(room['room_aes_key'], get_priv_key(added_by))
             room_aes_key = encrypt_rsa(aes_key, member.rsaPubKey)
+            print('Encrypted aes key for each user : ', room_aes_key, flush=True)
             # create dsa sign
             aes_key_sign = rsa_ds_signer(aes_key, get_priv_key(added_by))
+            print('Signature of aes key : ', aes_key_sign, flush=True)
             room_members_collection.insert_one({'_id': {'room_id': ObjectId(room_id), 'username': member.username},
                                                 'room_name': room_name,
                                                 'room_aes_key': room_aes_key,
@@ -190,5 +193,4 @@ def create_user_aes_key(enc_aes_key, creator, member):
     aes_key = decrypt_rsa(enc_aes_key, get_priv_key(creator))
     user_enc_aes_key = encrypt_rsa(aes_key, member.rsaPubKey)
     aes_key_sign = rsa_ds_signer(aes_key, get_priv_key(creator))
-    print('user_Aeskey created', flush=True)
     return user_enc_aes_key, aes_key_sign

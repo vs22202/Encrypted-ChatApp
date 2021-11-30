@@ -90,7 +90,6 @@
         let message_input=document.getElementById('message_input');
         document.getElementById('message_input_form').onsubmit = function (e) {
             e.preventDefault();
-            console.log("Reached Send");
             let message=message_input.value.trim();
             if(message.length){
                 var ciphertext = CryptoJS.AES.encrypt(message, room_aes_key).toString() 
@@ -104,16 +103,14 @@
     if(document.getElementById("reset_key")){
     document.getElementById("reset_key").onclick =(e) =>{
         e.preventDefault();
-        console.log("in the js fetch ",room_aes_key)
         fetch('/room/{{room._id}}/reset_key',{
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'
                 },
             body:JSON.stringify({room_id:"{{room._id}}"}),
-        }).then(console.log(room_aes_key))
+        }).then()
         location.reload();
-        console.log("after the js fetch",room_aes_key)
     };}
     /*document.getElementById("load_older_messages_button").onclick = (e) =>{
         console.log("Reached");
@@ -152,7 +149,6 @@
             }))
         } */
     document.getElementById("load_older_messages_button").onclick = (e) =>{
-        console.log("Reached");
         fetch(`/room/{{room._id}}/messages`, {
             method: 'GET',
             headers: {
@@ -168,16 +164,13 @@
                         data = message[i];
                         const newNode=document.createElement('div');
                         if(data.sender == "{{username}}"){
-                            console.log('it came here');
                             newNode.classList.add('mine');
                         }
                         else{
-                            console.log('it came here2');
                             newNode.classList.add('other'); 
                         }
                         var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
                         data.text = Normaltext            
-                        console.log(data.text)        
                         newNode.innerHTML=`<p>${data.sender}&nbsp;[${data.created_at }]&nbsp;</p> ${data.text}`;
                         const messages_div=document.getElementById('messages');
                         messages_div.insertBefore(newNode,messages_div.firstChild);
@@ -213,7 +206,6 @@
     socket.on('join_room_announcement',function(data){
         document.getElementById("load_older_messages_button").click();
         room_aes_key = data.room_aes_key;
-        console.log("after the js fetch",room_aes_key)
         const newNode=document.createElement('div');
         newNode.classList.add('join_room');
         newNode.innerHTML=`<i>${data.username}</i>joined the room`;
@@ -224,11 +216,9 @@
         data.message = Normaltext
         const newNode=document.createElement('div');
         if(data.username == "{{username}}"){
-            console.log('it came here');
             newNode.classList.add('mine');
         }
         else{
-            console.log('it came here2');
             newNode.classList.add('other'); 
         }
         newNode.innerHTML=`<p>${data.username}&nbsp;[${data.created_at }]&nbsp;</p>${data.message}`;

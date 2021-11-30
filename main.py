@@ -5,7 +5,7 @@ from flask_socketio import SocketIO, join_room
 from pymongo.errors import DuplicateKeyError
 from datetime import datetime
 from bson.json_util import dumps
-from Encryption import decrypt_rsa
+from Encryption import decrypt_rsa, rsa_ds_verifier
 from db import get_user, save_user, save_room, add_room_members, get_rooms_for_user, get_room, is_room_member, \
     get_room_members, is_room_admin, update_room, remove_room_members, save_message, get_messages, get_priv_key
 
@@ -79,24 +79,25 @@ def error(message):
 @login_required
 def create_room():
     message = ''
-    flag = 0
+
     if request.method == 'POST':
         room_name = request.form.get('room_name')
         usernames = [username.strip()
                      for username in request.form.get('members').split(',')]
 
         if len(room_name) and len(usernames):
-            room_id = save_room(room_name, current_user)
+            flag = 0
             if current_user.username in usernames:
                 usernames.remove(current_user.username)
                 message = ''
-                for username in usernames:
-                    if get_user(username):
-                        continue
-                    else:
-                        flag = -1
-                        message += 'user '+username+' does not exist\n'
-            if flag != -1:
+            for username in usernames:
+                if get_user(username):
+                    continue
+                else:
+                    flag = -1
+                    message += 'user '+username+' does not exist\n'
+            if flag == 0:
+                room_id = save_room(room_name, current_user)
                 add_room_members(room_id, room_name, usernames,
                                  current_user)
                 return redirect(url_for('view_room', room_id=room_id))
@@ -192,10 +193,13 @@ def get_older_messages(room_id):
 @socketio.on('join room')
 def handle_join_room_event(data):
     room_members = get_room_members(data['room'])
+    room = get_room(data['room'])
     for member in room_members:
         if member['_id']['username'] == current_user.username:
             room_aes_key = decrypt_rsa(
                 member['room_aes_key'], get_priv_key(current_user))
+            print('Aes Key Verifier: ', rsa_ds_verifier(
+                room_aes_key, member['created_dsa'], room['creator_pub_key']))
             session["room_aes_key"] = room_aes_key
             session.modified = True
             session.permanent = True

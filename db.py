@@ -21,6 +21,8 @@ hash_table_collection = chat_db.get_collection("hash_table")
 #print("Type of key: ",type(hash_table_public_key),"\nKey: ",hash_table_public_key)
 hash_table_public_key = b'-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArV2yT1PNtVvq2LHNm4lk\nMV42zv+W08hJzvBZZuenPEHR9o2/JdeRSYsir+ybX+6um4mskjSpNUR8mEncRYdk\nUcsg+8rG0MafN3mcBWcd9+TSdNJu4dOyy8IjwHM8nXWq1e5caWebFFL9TaxuQb1O\nuu35RU7nxrPtGMSN08NsOVscPvKBeMOB8vM/qbAPV2UohHK/oAww9RoNXvftovPT\nXSaDiSG+LgQw8VKVJFHHr506EXGU+FfxJekr4cnXhV8mb0gJTON9lsjKWrfaa9fc\nIirQ6KGhfR/3w46LzmVPtbiEjB4RlVhXH6mFsgD/P0YUOZZbEvFyaR7eav9NWyPW\n4QIDAQAB\n-----END PUBLIC KEY-----'
 hash_table_private_key = b'-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEArV2yT1PNtVvq2LHNm4lkMV42zv+W08hJzvBZZuenPEHR9o2/\nJdeRSYsir+ybX+6um4mskjSpNUR8mEncRYdkUcsg+8rG0MafN3mcBWcd9+TSdNJu\n4dOyy8IjwHM8nXWq1e5caWebFFL9TaxuQb1Ouu35RU7nxrPtGMSN08NsOVscPvKB\neMOB8vM/qbAPV2UohHK/oAww9RoNXvftovPTXSaDiSG+LgQw8VKVJFHHr506EXGU\n+FfxJekr4cnXhV8mb0gJTON9lsjKWrfaa9fcIirQ6KGhfR/3w46LzmVPtbiEjB4R\nlVhXH6mFsgD/P0YUOZZbEvFyaR7eav9NWyPW4QIDAQABAoIBAHWxVRqrbsw/IViI\npGeBxyYIqrauJuuRXiIBYwAMJakvmeWCZxC+nmBJ93ts6jIfLCRlO2VqILEL1HXi\nNopxFra8aqDlEUGshWw4v6WfUmX2zrUGIsZmXEwdeP3ufWj798UR82SPNGWAzXuM\norE4Xhli8sWNgqWPglc9IHdxhKgOQ9LmrTTt9//6oqYRSB1KTZkVC15ZPskZtAg2\nyFyEhUDHfBwzJwHMTJLV/RzbvWh2ScOFRJLYFjSlLZ7cbQktWkBUq3O/242nsa2N\nXvSFMXz4REmYvFImU6kzlteWmsRlO2e1PbVk9WEwK8mcvL180MSeGU/AVGAPDgf9\ntbM9OEECgYEA9dnsqj7VGqMF7SzMMcmnnGxRcFIPAl+5gkHNRhfYF1K47BFvpPey\nll7tHlXFUDSN7WGFcneFfE4puHyTn+5zOUfYq5QFMncX8OaVrOjOf/SqBw1bT5tH\njIzEido+6iFItCsbxNI2mGcaXw51qqCeyFke1EawsFgNz5biLzaczwkCgYEAtIXF\nhDXSaTA1Hd6WUuiNj0wIczUJRqrqzJJUf/LV/HdbqbWfyz2JygkdZVgq1O+BMUDb\n6e30MoqRTuFjVDHfs9W0v65dlMKbfR+9XYGhuaflscbmVSJE1hRbGvWe1MZ9lxNS\nJTStR7dnvIIQi2P4pnzmotxgri2/ag67H6UPZxkCgYANyEvGN4OG3MDGTQ6dc+qb\nkE74dwE0Zt1lef7iARAyLocDZO7XVrOCTowIeVJ4bpnORvtOMXkgQNmB6Cn2e02m\nVmrFI6Uu8RI8hRC7AsogzjyB7LPDwLbAIFwcRknkoj0LLKd/3zEEVjNaRNs/14VP\nQf/CcrwRBr6vdovzjaI40QKBgETOE9lvdjI3eJdY5mzVTFdIwJPArDduH643O9PE\np8DhcWN+4Vfiraj+zmB5OWINo201blx8IK4+2GF7UJOfqsbtdkX03KA9iGwpc9C2\n/wA3OToIOHRManY6LftZkN9ChE3XxGB/8me6ROS5ojqusPAr/PAoFQVuVF3FHZdT\nH0rJAoGAfBcBauaZmcFJbI/UU5dzx6LjwGVlkBbcehdCj5ZViLuzd0rTOi/QRvKO\nTwXJ24L+29z7D4fbZzI6um+gUt7nrljQQupu0COq8mV5ILbLWsYztFwugoekruSW\nCetnUBsvluYlKy6P/MDgAC2VVxxvb9Ab6oHRle20rlRGHD1EtbY=\n-----END RSA PRIVATE KEY-----'
+
+
 def save_user(username, email, password):
     password_hash = generate_password_hash(password)
     # RSA key gen
@@ -104,7 +106,7 @@ def add_room_members(room_id, room_name, usernames, added_by):
 def remove_room_members(room_id, usernames):
     room_members_collection.delete_many(
         {'_id': {'$in': [{'room_id': ObjectId(room_id), 'username': username} for username in usernames]}})
-    reset_room_aes_key(room_id)
+    # reset_room_aes_key(room_id)
 
 
 def save_priv_key(user, priv_key):
@@ -153,7 +155,7 @@ def save_message(room_id, text, sender):
         {'room_id': room_id, 'text': text, 'sender': sender, 'created_at': datetime.now()})
 
 
-MESSAGE_FETCH_LIMIT = 10000 
+MESSAGE_FETCH_LIMIT = 10000
 
 
 def get_messages(room_id, page=0):
@@ -165,22 +167,22 @@ def get_messages(room_id, page=0):
     return messages[::-1]
 
 
-def reset_room_aes_key(room_id):
-    room = get_room(room_id)
-    aes_key = generate_aes_key()
-    room_members = get_room_members(room_id)
-    for member in room_members:
-        if member['is_room_admin']:
-            admin = get_user(member['_id']['username'])
-            room_aes_key_enc = encrypt_rsa(aes_key, admin.rsaPubKey)
-            rooms_collection.update_one({'_id': ObjectId(room_id)}, {
-                '$set': {'room_aes_key': room_aes_key_enc}})
-            for user in room_members:
-                room_aes_key, aes_key_sign = create_user_aes_key(
-                    room_aes_key_enc, admin, user)
-                room_members_collection.update_one({'_id.room_id': ObjectId(room_id), '_id.username': user['_id']['username']}, {
-                    '$set': {'room_aes_key': room_aes_key, 'created_dsa': aes_key_sign}})
-        print('databse sucess', flush=True)
+# def reset_room_aes_key(room_id):
+#     room = get_room(room_id)
+#     aes_key = generate_aes_key()
+#     room_members = get_room_members(room_id)
+#     for member in room_members:
+#         if member['is_room_admin']:
+#             admin = get_user(member['_id']['username'])
+#             room_aes_key_enc = encrypt_rsa(aes_key, admin.rsaPubKey)
+#             rooms_collection.update_one({'_id': ObjectId(room_id)}, {
+#                 '$set': {'room_aes_key': room_aes_key_enc}})
+#             for user in room_members:
+#                 room_aes_key, aes_key_sign = create_user_aes_key(
+#                     room_aes_key_enc, admin, user)
+#                 room_members_collection.update_one({'_id.room_id': ObjectId(room_id), '_id.username': user['_id']['username']}, {
+#                     '$set': {'room_aes_key': room_aes_key, 'created_dsa': aes_key_sign}})
+#         print('databse sucess', flush=True)
 
 
 def create_user_aes_key(enc_aes_key, creator, member):

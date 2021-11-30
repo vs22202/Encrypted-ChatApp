@@ -2,7 +2,7 @@
 
 {% block main %}
 <div class="d-flex gap-3 flex-column">
-    <h1 class='d-flex align-items-baseline'>Room: {{room.name}}&nbsp;<a href="/room/{{ room._id }}/edit" class='btn bg-primary btn-sm rounded-3'><i class="bi bi-pencil-fill fs-3"></i></a></h1>
+    <h1 class='d-flex align-items-baseline'>Room: {{room.name}}&nbsp;{% if admin %}<a href="/room/{{ room._id }}/edit" class='btn bg-primary btn-sm rounded-3'><i class="bi bi-pencil-fill fs-3"></i></a>{% endif %}</h1>
 <div>
     <button type="button" id="load_older_messages_button" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Load Previous Messages"><i class="bi bi-clock-history"></i></button>
 </div>
@@ -42,9 +42,8 @@
       </div>
 </div>
 <div>
-{% if admin %}
-<button id="reset_key" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Resets room symmetric key"><i class="bi bi-key"> Reset Aes Key</i></button>
-{% endif %}
+<!-- <button id="reset_key" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Resets room symmetric key"><i class="bi bi-key"> Reset Aes Key</i></button> -->
+
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
@@ -91,6 +90,7 @@
         let message_input=document.getElementById('message_input');
         document.getElementById('message_input_form').onsubmit = function (e) {
             e.preventDefault();
+            console.log("Reached Send");
             let message=message_input.value.trim();
             if(message.length){
                 var ciphertext = CryptoJS.AES.encrypt(message, room_aes_key).toString() 
@@ -101,6 +101,7 @@
         }
     });
     page=0;
+    if(document.getElementById("reset_key")){
     document.getElementById("reset_key").onclick =(e) =>{
         e.preventDefault();
         console.log("in the js fetch ",room_aes_key)
@@ -113,7 +114,7 @@
         }).then(console.log(room_aes_key))
         location.reload();
         console.log("after the js fetch",room_aes_key)
-    };
+    };}
     /*document.getElementById("load_older_messages_button").onclick = (e) =>{
         console.log("Reached");
         //fetch(`/room/{{room._id}}/messages?page=${++page}`, {
@@ -166,6 +167,14 @@
                     for(let i=page;i<forward;i++){
                         data = message[i];
                         const newNode=document.createElement('div');
+                        if(data.sender == "{{username}}"){
+                            console.log('it came here');
+                            newNode.classList.add('mine');
+                        }
+                        else{
+                            console.log('it came here2');
+                            newNode.classList.add('other'); 
+                        }
                         var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
                         data.text = Normaltext            
                         console.log(data.text)        
@@ -206,13 +215,22 @@
         room_aes_key = data.room_aes_key;
         console.log("after the js fetch",room_aes_key)
         const newNode=document.createElement('div');
-        newNode.innerHTML=`<p>${data.username}</p>joined the room`;
+        newNode.classList.add('join_room');
+        newNode.innerHTML=`<i>${data.username}</i>joined the room`;
         document.getElementById('messages').appendChild(newNode);
         });
     socket.on('receive_message',function(data){
         var Normaltext = CryptoJS.AES.decrypt(data.message, room_aes_key).toString(CryptoJS.enc.Utf8);
         data.message = Normaltext
         const newNode=document.createElement('div');
+        if(data.username == "{{username}}"){
+            console.log('it came here');
+            newNode.classList.add('mine');
+        }
+        else{
+            console.log('it came here2');
+            newNode.classList.add('other'); 
+        }
         newNode.innerHTML=`<p>${data.username}&nbsp;[${data.created_at }]&nbsp;</p>${data.message}`;
         document.getElementById('messages').appendChild(newNode);
         });

@@ -21,23 +21,45 @@ html,
 	flex-direction: column;
 	gap: 1rem;
 }
-.messages div {
+.messages .mine {
 	display: flex;
+	flex-direction: column;
+	background-color: var(--bs-primary);
+	font-size: calc(var(--bs-body-font-size)+1.25rem);
+	padding: 0.5em 1em;
+	border: 1px solid var(--bs-dark);
+	border-radius: 20px;
+	width: max-content;
+	gap: 0.5rem;
+	align-self: flex-end;
+}
+.messages .other {
+	display: flex;
+	background-color: var(--bs-dark);
+	color: var(--bs-light);
 	flex-direction: column;
 	font-size: calc(var(--bs-body-font-size)+1.25rem);
 	padding: 0.5em 1em;
 	border: 1px solid var(--bs-dark);
 	border-radius: 20px;
+	width: max-content;
+	align-self: flex-start;
 	gap: 0.5rem;
 }
-.messages div p {
-	margin: 0;
+.messages .mine p {
 	font-size: var(--bs-body-font-size);
 }
-.messages div:nth-child(odd) {
-	background-color: var(--bs-primary);
+.messages .other p {
+	font-size: var(--bs-body-font-size);
 }
-.messages div:nth-child(even) {
-	background-color: var(--bs-dark);
-	color: var(--bs-light);
+.join_room {
+	display: flex;
+	flex-direction: row;
+	font-size: var(--bs-body-font-size);
+	padding: 0.25em 5em;
+	border: 1px solid var(--bs-dark);
+	border-radius: 10px;
+	width: max-content;
+	align-self: center;
+	gap: 0.5rem;
 }

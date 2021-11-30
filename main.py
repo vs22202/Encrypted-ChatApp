@@ -7,8 +7,7 @@ from datetime import datetime
 from bson.json_util import dumps
 from Encryption import decrypt_rsa
 from db import get_user, save_user, save_room, add_room_members, get_rooms_for_user, get_room, is_room_member, \
-    get_room_members, is_room_admin, update_room, remove_room_members, save_message, get_messages, get_priv_key, \
-    reset_room_aes_key
+    get_room_members, is_room_admin, update_room, remove_room_members, save_message, get_messages, get_priv_key
 
 app = Flask(__name__)
 app.secret_key = "my_very_secret_key"
@@ -71,7 +70,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route("/error")
+@app.route("/error/<message>")
 def error(message):
     return render_template('Error.html', message=message if message else "")
 
@@ -128,6 +127,7 @@ def edit_room(room_id):
             members_to_remove = list(
                 set(existing_room_members) - set(new_members))
             if len(members_to_add) >= 1:
+                flag = 0
                 message = ''
                 for username in members_to_add:
                     if get_user(username):
@@ -135,6 +135,8 @@ def edit_room(room_id):
                     else:
                         flag = -1
                         message += 'user '+username+' does not exist\n'
+            else:
+                flag = -1
             if flag != -1:
                 add_room_members(room_id, room_name, members_to_add,
                                  current_user)
@@ -149,16 +151,16 @@ def edit_room(room_id):
         return redirect(url_for('error', message="Admin Access Required"))
 
 
-@app.route('/room/<room_id>/reset_key', methods=['POST'])
-@login_required
-def reset_key(room_id):
-    room = get_room(room_id)
-    print('reached to python', flush=True)
-    if room and is_room_admin(room_id, current_user.username):
-        reset_room_aes_key(room_id)
-        print('back to python', flush=True)
-        return redirect(url_for('view_room', room_id=room_id))
-    return redirect(url_for('error', message="Admin Access Required"))
+# @app.route('/room/<room_id>/reset_key', methods=['POST'])
+# @login_required
+# def reset_key(room_id):
+#     room = get_room(room_id)
+#     print('reached to python', flush=True)
+#     if room and is_room_admin(room_id, current_user.username):
+#         reset_room_aes_key(room_id)
+#         print('back to python', flush=True)
+#         return redirect(url_for('view_room', room_id=room_id))
+#     return redirect(url_for('error', message="Admin Access Required"))
 
 
 @app.route('/room/<room_id>')

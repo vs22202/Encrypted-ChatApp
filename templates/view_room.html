@@ -92,7 +92,9 @@
             e.preventDefault();
             let message=message_input.value.trim();
             if(message.length){
+                console.log('Message',message);
                 var ciphertext = CryptoJS.AES.encrypt(message, room_aes_key).toString() 
+                console.log('Cipher Text',ciphertext);
                 socket.emit('send_message',{username:"{{username}}",room:"{{room._id}}",message:ciphertext});
             }
             message_input.value="";
@@ -213,6 +215,7 @@
         });
     socket.on('receive_message',function(data){
         var Normaltext = CryptoJS.AES.decrypt(data.message, room_aes_key).toString(CryptoJS.enc.Utf8);
+        console.log('Message',Normaltext);
         data.message = Normaltext
         const newNode=document.createElement('div');
         if(data.username == "{{username}}"){

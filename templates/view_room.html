@@ -2,118 +2,125 @@
 
 {% block main %}
 <div class="d-flex gap-3 flex-column">
-    <h1 class='d-flex align-items-baseline'>Room: {{room.name}}&nbsp;{% if admin %}<a href="/room/{{ room._id }}/edit" class='btn bg-primary btn-sm rounded-3'><i class="bi bi-pencil-fill fs-3"></i></a>{% endif %}</h1>
-<div>
-    <button type="button" id="load_older_messages_button" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Load Previous Messages"><i class="bi bi-clock-history"></i></button>
-</div>
-<div id="messages" class='fs-5 messages'>
-    <!--     {% for message in messages %}
+    <h1 class='d-flex align-items-baseline'>Room: {{room.name}}&nbsp;<a href="/room/{{ room._id }}/edit"
+            class='btn bg-primary btn-sm rounded-3'><i class="bi bi-pencil-fill fs-3"></i></a></h1>
+    <div>
+        <button type="button" id="load_older_messages_button" class='btn btn-rounded btn-sm bg-primary'
+            data-bs-toggle="tooltip" data-bs-placement="right" title="Load Previous Messages"><i
+                class="bi bi-clock-history"></i></button>
+    </div>
+    <div id="messages" class='fs-5 messages'>
+        <!--     {% for message in messages %}
         <div><b>{{message.sender}}&nbsp;[{{ message.created_at }}]&nbsp;</b>: {{message.text}}</div>
         {% endfor %} -->
-</div>
-<form id="message_input_form" class="me-auto w-75">
-    <input type="text" class='rounded w-75' placeholder="Enter Message.." id="message_input" autocomplete="false">
-    <button type="submit" class='btn btn-rounded btn-sm bg-primary' ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89.471-1.178-1.178.471L5.93 9.363l.338.215a.5.5 0 0 1 .154.154l.215.338 7.494-7.494Z"/>
-      </svg></button>
-</form>
-<div class="accordion" id="accordionExample">
-      <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTwo">
-          <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-            <h6 class='m-0'>Room Members&nbsp;</h6>
-          </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-          <div class="accordion-body bg-light">
-            <ul class='list-group list-group-flush bg-light'>
-                {% for member in room_members %}
-                <li class='list-group-item border-0 bg-light p-0 font-weight-bolder fs-6'>{{member._id.username}}
-                    {% if member.is_room_admin %}
-                        &nbsp;[Room Admin]
-                    {% else %}
-                        &nbsp;[Room Member]
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>          
+    </div>
+    <form id="message_input_form" class="me-auto w-75">
+        <input type="text" class='rounded w-75' placeholder="Enter Message.." id="message_input" autocomplete="false">
+        <button type="submit" class='btn btn-rounded btn-sm bg-primary'><svg xmlns="http://www.w3.org/2000/svg"
+                width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89.471-1.178-1.178.471L5.93 9.363l.338.215a.5.5 0 0 1 .154.154l.215.338 7.494-7.494Z" />
+            </svg></button>
+    </form>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <h6 class='m-0'>Room Members&nbsp;</h6>
+                </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                data-bs-parent="#accordionExample">
+                <div class="accordion-body bg-light">
+                    <ul class='list-group list-group-flush bg-light'>
+                        {% for member in room_members %}
+                        <li class='list-group-item border-0 bg-light p-0 font-weight-bolder fs-6'>
+                            {{member._id.username}}
+                            {% if member.is_room_admin %}
+                            &nbsp;[Room Admin]
+                            {% else %}
+                            &nbsp;[Room Member]
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
         </div>
-        </div>
-      </div>
-</div>
-<div>
-<!-- <button id="reset_key" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip" data-bs-placement="right" title="Resets room symmetric key"><i class="bi bi-key"> Reset Aes Key</i></button> -->
-
-</div>
+    </div>
+    <div>
+        <button id="reset_key" class='btn btn-rounded btn-sm bg-primary' data-bs-toggle="tooltip"
+            data-bs-placement="right" title="Resets room symmetric key"><i class="bi bi-key"> Reset Aes Key</i></button>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
-        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
-        crossorigin="anonymous"></script>
+    integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+    crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
-        integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/aes.min.js"
-        integrity="sha512-4b1zfeOuJCy8B/suCMGNcEkMcQkQ+/jQ6HlJIaYVGvg2ZydPvdp7GY0CuRVbNpSxNVFqwTAmls2ftKSkDI9vtA=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    integrity="sha512-4b1zfeOuJCy8B/suCMGNcEkMcQkQ+/jQ6HlJIaYVGvg2ZydPvdp7GY0CuRVbNpSxNVFqwTAmls2ftKSkDI9vtA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="text/javascript" charset="utf-8">
-        var room_aes_key;
-        var JsonFormatter = {
-            stringify: function(cipherParams) {
-                var jsonObj = { ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64) };
-                if (cipherParams.iv) {
+    var room_aes_key;
+    var JsonFormatter = {
+        stringify: function (cipherParams) {
+            var jsonObj = { ct: cipherParams.ciphertext.toString(CryptoJS.enc.Base64) };
+            if (cipherParams.iv) {
                 jsonObj.iv = cipherParams.iv.toString();
-                }
-                if (cipherParams.salt) {
-                jsonObj.s = cipherParams.salt.toString();
-                }
-                return JSON.stringify(jsonObj);
-            },
-            parse: function(jsonStr) {
-
-                var jsonObj = JSON.parse(jsonStr);
-                var cipherParams = CryptoJS.lib.CipherParams.create({
-                ciphertext: CryptoJS.enc.Base64.parse(jsonObj.ct)
-                });
-                if (jsonObj.iv) {
-                cipherParams.iv = CryptoJS.enc.Hex.parse(jsonObj.iv);
-                }
-                if (jsonObj.s) {
-                cipherParams.salt = CryptoJS.enc.Hex.parse(jsonObj.s);
-                }
-                return cipherParams;
             }
+            if (cipherParams.salt) {
+                jsonObj.s = cipherParams.salt.toString();
+            }
+            return JSON.stringify(jsonObj);
+        },
+        parse: function (jsonStr) {
+
+            var jsonObj = JSON.parse(jsonStr);
+            var cipherParams = CryptoJS.lib.CipherParams.create({
+                ciphertext: CryptoJS.enc.Base64.parse(jsonObj.ct)
+            });
+            if (jsonObj.iv) {
+                cipherParams.iv = CryptoJS.enc.Hex.parse(jsonObj.iv);
+            }
+            if (jsonObj.s) {
+                cipherParams.salt = CryptoJS.enc.Hex.parse(jsonObj.s);
+            }
+            return cipherParams;
+        }
     };
     var socket = io();
-    socket.on('connect', function() {
-        socket.emit('join room', {username:"{{username}}",room:"{{room._id}}"});
-        let message_input=document.getElementById('message_input');
+    socket.on('connect', function () {
+        socket.emit('join room', { username: "{{username}}", room: "{{room._id}}" });
+        let message_input = document.getElementById('message_input');
         document.getElementById('message_input_form').onsubmit = function (e) {
             e.preventDefault();
-            let message=message_input.value.trim();
-            if(message.length){
-                console.log('Message',message);
-                var ciphertext = CryptoJS.AES.encrypt(message, room_aes_key).toString() 
-                console.log('Cipher Text',ciphertext);
-                socket.emit('send_message',{username:"{{username}}",room:"{{room._id}}",message:ciphertext});
+            let message = message_input.value.trim();
+            if (message.length) {
+                var ciphertext = CryptoJS.AES.encrypt(message, room_aes_key).toString()
+                socket.emit('send_message', { username: "{{username}}", room: "{{room._id}}", message: ciphertext });
             }
-            message_input.value="";
+            message_input.value = "";
             message_input.focus();
         }
     });
-    page=0;
-    if(document.getElementById("reset_key")){
-    document.getElementById("reset_key").onclick =(e) =>{
+    page = 0;
+    document.getElementById("reset_key").onclick = (e) => {
         e.preventDefault();
-        fetch('/room/{{room._id}}/reset_key',{
-            method:'POST',
+        console.log("in the js fetch ", room_aes_key)
+        fetch('/room/{{room._id}}/reset_key', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-                },
-            body:JSON.stringify({room_id:"{{room._id}}"}),
-        }).then()
+            },
+            body: JSON.stringify({ room_id: "{{room._id}}" }),
+        }).then(console.log(room_aes_key))
         location.reload();
-    };}
+        console.log("after the js fetch", room_aes_key)
+    };
     /*document.getElementById("load_older_messages_button").onclick = (e) =>{
         console.log("Reached");
         //fetch(`/room/{{room._id}}/messages?page=${++page}`, {
@@ -150,83 +157,94 @@
                         }, 4000);}
             }))
         } */
-    document.getElementById("load_older_messages_button").onclick = (e) =>{
+    document.getElementById("load_older_messages_button").onclick = (e) => {
+        console.log("Reached");
         fetch(`/room/{{room._id}}/messages`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'
             }
-            }).then(res=>res.json().then(message=>{
-                if(message.length !== 0  && page<message.length){
-                    message.reverse();
-                    var forward = page+3;
-                    if(message.length<page+3)
-                        forward = message.length;
-                    for(let i=page;i<forward;i++){
-                        data = message[i];
-                        const newNode=document.createElement('div');
-                        if(data.sender == "{{username}}"){
-                            newNode.classList.add('mine');
-                        }
-                        else{
-                            newNode.classList.add('other'); 
-                        }
-                        var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
-                        data.text = Normaltext            
-                        newNode.innerHTML=`<p>${data.sender}&nbsp;[${data.created_at }]&nbsp;</p> ${data.text}`;
-                        const messages_div=document.getElementById('messages');
-                        messages_div.insertBefore(newNode,messages_div.firstChild);
+        }).then(res => res.json().then(message => {
+            if (message.length !== 0 && page < message.length) {
+                message.reverse();
+                var forward = page + 3;
+                if (message.length < page + 3)
+                    forward = message.length;
+                for (let i = page; i < forward; i++) {
+                    data = message[i];
+                    const newNode = document.createElement('div');
+                    var Normaltext = CryptoJS.AES.decrypt(data.text, room_aes_key).toString(CryptoJS.enc.Utf8);
+                    data.text = Normaltext
+                    console.log(data.text)
+                    if ("{{current_user.username}}" == data.sender) {
+                        console.log("{{current_user.username}}", data.sender);
+                        newNode.classList.add('self');
+                        newNode.innerHTML = `<p>You&nbsp;[${data.created_at}]&nbsp;</p> ${data.text}`;
+
                     }
+                    else {
+                        newNode.innerHTML = `<p>${data.sender}&nbsp;[${data.created_at}]&nbsp;</p> ${data.text}`;
+                    }
+                    const messages_div = document.getElementById('messages');
+                    messages_div.insertBefore(newNode, messages_div.firstChild);
                 }
-                else{
-                    const warning_message =document.getElementById('warning-message');
-                    warning_message ? warning_message.remove() :"";
-                    const newNode=document.createElement('div');
-                    newNode.classList.add('alert','alert-warning');
-                    newNode.setAttribute('role','alert');
-                    newNode.setAttribute('id','warning-message');
-                    newNode.innerText = 'No More Older Messages Available';
-                    document.getElementById('messages').insertAdjacentElement('beforebegin',newNode);
-                    setTimeout(() => {
-                            const elem = document.getElementById("warning-message");
-                            elem ? elem.remove() :"";
-                        }, 4000);
-                    }
-                page+=3;
-            }))
-    } 
+            }
+            else {
+                const warning_message = document.getElementById('warning-message');
+                warning_message ? warning_message.remove() : "";
+                const newNode = document.createElement('div');
+                newNode.classList.add('alert', 'alert-warning');
+                newNode.setAttribute('role', 'alert');
+                newNode.setAttribute('id', 'warning-message');
+                newNode.innerText = 'No More Older Messages Available';
+                document.getElementById('messages').insertAdjacentElement('beforebegin', newNode);
+                setTimeout(() => {
+                    const elem = document.getElementById("warning-message");
+                    elem ? elem.remove() : "";
+                }, 4000);
+            }
+            page += 3;
+        }))
+    }
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
+        return new bootstrap.Tooltip(tooltipTriggerEl)
     })
     window.onbeforeunload = function () {
-        socket.emit('leave room' , {
+        socket.emit('leave room', {
             username: "{{username}}",
-            room : "{{room._id}}"
+            room: "{{room._id}}"
         })
-       };
-    socket.on('join_room_announcement',function(data){
+    };
+    socket.on('join_room_announcement', function (data) {
         document.getElementById("load_older_messages_button").click();
         room_aes_key = data.room_aes_key;
-        const newNode=document.createElement('div');
-        newNode.classList.add('join_room');
-        newNode.innerHTML=`<i>${data.username}</i>joined the room`;
+        console.log("after the js fetch", room_aes_key)
+        const newNode = document.createElement('div');
+        if ("{{current_user.username}}" == data.username) {
+            console.log("{{current_user.username}}", data.username);
+            newNode.classList.add('self');
+            newNode.innerHTML = `<p>You</p>joined the room`;
+        }
+        else {
+            newNode.innerHTML = `<p>${data.username}</p>joined the room`;
+        }
         document.getElementById('messages').appendChild(newNode);
-        });
-    socket.on('receive_message',function(data){
+    });
+    socket.on('receive_message', function (data) {
         var Normaltext = CryptoJS.AES.decrypt(data.message, room_aes_key).toString(CryptoJS.enc.Utf8);
         console.log('Message',Normaltext);
         data.message = Normaltext
-        const newNode=document.createElement('div');
-        if(data.username == "{{username}}"){
-            newNode.classList.add('mine');
+        const newNode = document.createElement('div');
+        console.log("{{current_user.username}}", data.username, 'hrer');
+        if ("{{current_user.username}}" == data.username) {
+            console.log("{{current_user.username}}", data.username);
+            newNode.classList.add('self');
+            newNode.innerHTML = `<p>You &nbsp;[${data.created_at}]&nbsp;</p>${data.message}`;
         }
-        else{
-            newNode.classList.add('other'); 
-        }
-        newNode.innerHTML=`<p>${data.username}&nbsp;[${data.created_at }]&nbsp;</p>${data.message}`;
+        newNode.innerHTML = `<p>${data.username}&nbsp;[${data.created_at}]&nbsp;</p>${data.message}`;
         document.getElementById('messages').appendChild(newNode);
-        });
+    });
 
 </script>
 {% endblock %}

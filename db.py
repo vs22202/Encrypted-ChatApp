@@ -6,9 +6,8 @@ from datetime import datetime
 from Encryption import generate_rsa_keys, generate_aes_key, encrypt_rsa, decrypt_rsa, rsa_ds_signer, sha_md_create, rsa_ds_verifier
 
 client = MongoClient(
-    "mongodb+srv://test_1:Test1@chatapp.tgi3t.mongodb.net/Chat_DB?retryWrites=true&w=majority",
+    "mongodb+srv://root:Vishaal123@cluster0.tgi3t.mongodb.net/?retryWrites=true&w=majority",
     tlsAllowInvalidCertificates=True)
-
 chat_db = client.get_database("Chat_DB")
 users_collection = chat_db.get_collection("users")
 rooms_collection = chat_db.get_collection("rooms")

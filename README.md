@@ -1,11 +1,11 @@
 # Encrypted-ChatApp
 I built an encrypted Chat-app using AES and RSA 
-#Server-Side
+# Server-Side
 Python-Flask
-#Client-Side
+# Client-Side
 Html CSS JavaScript Bootstrap
-#Server-Side Encryption
+# Server-Side Encryption
 PyCryptoDome
-#Client-Side Encryption
+# Client-Side Encryption
 CryptoJs
 

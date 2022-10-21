@@ -30,11 +30,14 @@ html,
 .messages div {
 	display: flex;
 	flex-direction: column;
+	background-color: var(--bs-primary);
 	font-size: calc(var(--bs-body-font-size)+1.25rem);
 	padding: 0.5em 1em;
 	border: 1px solid var(--bs-dark);
 	border-radius: 20px;
+	width: max-content;
 	gap: 0.5rem;
+	align-self: flex-end;
 }
 
 .messages div p {

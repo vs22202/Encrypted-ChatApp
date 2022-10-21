@@ -233,6 +233,7 @@
     });
     socket.on('receive_message', function (data) {
         var Normaltext = CryptoJS.AES.decrypt(data.message, room_aes_key).toString(CryptoJS.enc.Utf8);
+        console.log('Message',Normaltext);
         data.message = Normaltext
         const newNode = document.createElement('div');
         console.log("{{current_user.username}}", data.username, 'hrer');
